@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "907211104537",
+    "firebase_url": "https://doancnpm-cf369.firebaseio.com",
+    "project_id": "doancnpm-cf369",
+    "storage_bucket": "doancnpm-cf369.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907211104537:android:a4a53bf9b96b2dd3d86588",
+        "android_client_info": {
+          "package_name": "com.doancnpm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "907211104537-pcg26lsb6gd2gvvlgivt4moh78j1n5vs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doancnpm",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "907211104537-pk3c4rhdqielftq1qk1amngna1nm9c4a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQpRiPqjE7tzd0glbSsRkqJcObimQiHZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "907211104537-pk3c4rhdqielftq1qk1amngna1nm9c4a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
