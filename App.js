@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, createContext, useMemo } from 'react';
+import React, { useEffect, useReducer, createContext, useMemo, useState } from 'react';
 import { Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import 'react-native-gesture-handler';
@@ -22,6 +22,7 @@ const Stack = createStackNavigator();
 export const AuthContext = createContext();
 
 const App = () => {
+  const [typeLogin, setTypeLogin] = useState('');
 
   const [state, dispatch] = useReducer(
     (prevState, action) => {
@@ -67,6 +68,7 @@ const App = () => {
             console.log(e);
           }
 
+          setTypeLogin('default');
           dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
         } else {
           Alert.alert('', 'Username hoặc mật khẩu không đúng');
@@ -76,10 +78,21 @@ const App = () => {
         try {
           await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
           const userInfo = await GoogleSignin.signIn();
-          console.log(userInfo.user);
-          await AsyncStorage.setItem('@token', userInfo.idToken);
-          await AsyncStorage.setItem('@name', userInfo.user.name);
-          await AsyncStorage.setItem('@photo', userInfo.user.photo);
+          fetch('http://hiringtutors.azurewebsites.net/api/Auth/login', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: userInfo.idToken })
+          })
+            .then(response => response.json())
+            .then(data => {
+              AsyncStorage.setItem('@token', data.token);
+              AsyncStorage.setItem('@name', data.fullName);
+              AsyncStorage.setItem('@avatar', data.avatar);
+            });
+          setTypeLogin('google');
           dispatch({ type: 'SIGN_IN', token: userInfo.idToken });
         } catch (error) {
           if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -95,6 +108,26 @@ const App = () => {
       },
       signOut: () => {
         AsyncStorage.removeItem('@token');
+        AsyncStorage.removeItem('@name');
+        AsyncStorage.removeItem('@avatar');
+        switch (typeLogin) {
+          case 'default':
+            break;
+          case 'google':
+            fetch('http://hiringtutors.azurewebsites.net/api/Auth/logout', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + state.token
+              }
+            })
+              .then(response => console.log(response))
+              .catch(error => console.log(error));
+            break;
+          case 'facebook':
+            break;
+        }
         dispatch({ type: 'SIGN_OUT' });
       },
       signUp: async data => {

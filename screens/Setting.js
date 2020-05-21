@@ -6,18 +6,18 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/Setting';
 import { mainColor } from '../constant/constant';
-import { AuthContext } from '../App';
 import AsyncStorage from '@react-native-community/async-storage';
+import { AuthContext } from '../App';
 
 function Setting(props) {
     const [name, setName] = useState('');
-    const [photo, setPhoto] = useState('');
+    const [avatar, setAvatar] = useState('null');
     const { signOut } = useContext(AuthContext);
 
     useEffect(() => {
         const fetchUser = async () => {
             setName(await AsyncStorage.getItem('@name'));
-            setPhoto(await AsyncStorage.getItem('@photo'));
+            setAvatar(await AsyncStorage.getItem('@avatar'));
         }
         fetchUser();
     }, []);
@@ -25,7 +25,7 @@ function Setting(props) {
     return (
         <View>
             <View style={styles.top}>
-                <Image source={{ uri: photo }} style={styles.img} />
+                <Image source={{ uri: avatar }} style={styles.img} />
                 <View style={styles.photo}>
                     <Entypo name='camera' color='white' size={16} />
                 </View>
