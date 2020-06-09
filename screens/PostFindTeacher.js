@@ -6,7 +6,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Foundation from 'react-native-vector-icons/Foundation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { mainColor, subjectsData, provinces } from '../constant/constant';
+import { mainColor, subjectsData, provinces, placeholderColor } from '../constant/constant';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import DaySelect from '../components/DaySelect';
 
@@ -64,7 +64,7 @@ function PostFindTeacher(props) {
                         <View style={styles.reqRow}>
                             <Entypo name='book' color={mainColor} size={20} style={styles.iconReq} />
                             <Picker mode='dropdown' style={styles.inputReq} selectedValue={subject} onValueChange={setSubject}>
-                                <Picker.Item label="Môn học" value="" color='grey' />
+                                <Picker.Item label="Môn học" value="" color={placeholderColor} />
                                 {subjectsData.map(subject => <Picker.Item key={subject.id} label={subject.label} value={subject.value} />)}
                             </Picker>
                         </View>
@@ -78,7 +78,7 @@ function PostFindTeacher(props) {
                                 <View style={{ flex: 8, marginLeft: 3 }}>
                                     {
                                         theme.length === 0
-                                            ? <Text style={{ color: 'grey', fontSize: 16 }}>Chủ đề</Text>
+                                            ? <Text style={{ color: placeholderColor, fontSize: 16 }}>Chủ đề</Text>
                                             : <Text style={{ fontSize: 16 }}>{getThemesStr()}</Text>
                                     }
                                 </View>
@@ -87,7 +87,7 @@ function PostFindTeacher(props) {
                         <View style={styles.reqRow}>
                             <Foundation name='clock' color={mainColor} size={20} style={{ ...styles.iconReq, paddingLeft: 18 }} />
                             <Picker mode='dropdown' style={{ ...styles.inputReq, marginLeft: -4 }} selectedValue={timeStudy} onValueChange={setTimeStudy}>
-                                <Picker.Item label="Thời lượng học" value="" color='grey' />
+                                <Picker.Item label="Thời lượng học" value="" color={placeholderColor} />
                                 <Picker.Item label="1h" value="1" />
                                 <Picker.Item label="1.5h" value="1.5" />
                                 <Picker.Item label="2h" value="2" />
@@ -97,7 +97,7 @@ function PostFindTeacher(props) {
                         <View style={styles.reqRow}>
                             <AntDesign name='database' color={mainColor} size={20} style={{ ...styles.iconReq, paddingLeft: 16 }} />
                             <Picker mode='dropdown' style={styles.inputReq} selectedValue={typeStudy} onValueChange={setTypeStudy}>
-                                <Picker.Item label="Hình thức dạy" value="" color='grey' />
+                                <Picker.Item label="Hình thức dạy" value="" color={placeholderColor} />
                                 <Picker.Item label="Online" value="online" />
                                 <Picker.Item label="Offline" value="offline" />
                                 <Picker.Item label="Online, Offline" value="both" />
@@ -115,7 +115,7 @@ function PostFindTeacher(props) {
                         <View style={styles.reqRow}>
                             <Entypo name='location-pin' color={mainColor} size={20} style={{ ...styles.iconReq, paddingLeft: 16 }} />
                             <Picker mode='dropdown' style={styles.inputReq} selectedValue={province} onValueChange={setProvince}>
-                                <Picker.Item label="Tỉnh thành" value="" color='grey' />
+                                <Picker.Item label="Tỉnh thành" value="" color={placeholderColor} />
                                 {provinces.map(province => <Picker.Item key={province.id} label={province.label} value={province.value} />)}
                             </Picker>
                         </View>

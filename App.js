@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, createContext, useMemo } from 'react';
-import { Text } from 'react-native';
+import { Text, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,20 +17,27 @@ import ProfileTeacherScreen from './screens/ProfileTeacher';
 import EvaluateScreen from './screens/Evaluate';
 import FilterScreen from './screens/Filter';
 import SplashScreen from './screens/Splash';
+import BecomeTeacherScreen from './screens/BecomeTeacher';
+import axios from 'axios';
 
 const Stack = createStackNavigator();
 export const AuthContext = createContext();
 
-const App = () => {
+const App = (props) => {
+
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
         case 'RESTORE_TOKEN':
           return { ...prevState, token: action.token, isLoading: false }
         case 'SIGN_IN':
-          return { ...prevState, token: action.token };
+          return { ...prevState, token: action.token, isLoading: false };
         case 'SIGN_OUT':
-          return { ...prevState, token: null };
+          return { ...prevState, token: null, isLoading: false };
+        case 'LOADING':
+          return { ...prevState, isLoading: true };
+        case 'LOADED':
+          return { ...prevState, isLoading: false };
       }
     }, { token: null, isLoading: true }
   );
@@ -57,42 +64,24 @@ const App = () => {
 
   const authContext = useMemo(
     () => ({
-      signIn: async data => {
-        const { username, password } = data;
-        if (username === 'admin' && password === '123456') {
-          try {
-            await AsyncStorage.setItem('@token', 'dummy-auth-token');
-          } catch (e) {
-            console.log(e);
-          }
-
-          setTypeLogin('default');
-          dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
-        } else {
-          Alert.alert('', 'Username hoặc mật khẩu không đúng');
-        }
+      signIn: async token => {
+        dispatch({ type: 'SIGN_IN', token });
       },
       signInWithGoogle: async () => {
         try {
           await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
           const userInfo = await GoogleSignin.signIn();
-          console.log(userInfo.idToken);
-          fetch('http://hiringtutors.azurewebsites.net/api/Auth/login', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ token: userInfo.idToken })
-          })
-            .then(response => response.json())
-            .then(data => {
-              console.log(data);
-              AsyncStorage.setItem('@token', data.token);
-              AsyncStorage.setItem('@name', data.fullName);
-              AsyncStorage.setItem('@avatar', data.avatar);
-              setTypeLogin('google');
-              dispatch({ type: 'SIGN_IN', token: data.token });
+          dispatch({ type: 'LOADING' });
+          axios.post('http://hiringtutors.azurewebsites.net/api/Auth/login', { token: userInfo.idToken })
+            .then(res => {
+              AsyncStorage.setItem('@token', res.data.token);
+              AsyncStorage.setItem('@name', res.data.fullName);
+              AsyncStorage.setItem('@avatar', res.data.avatar);
+              dispatch({ type: 'SIGN_IN', token: res.data.token });
+            })
+            .catch(err => {
+              Alert.alert('', 'Đã xảy ra lỗi');
+              dispatch({ type: 'LOADED' });
             });
         } catch (error) {
           if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -107,30 +96,25 @@ const App = () => {
         }
       },
       signOut: async () => {
-        fetch('http://hiringtutors.azurewebsites.net/api/Auth/logout', {
-          method: 'POST',
+        dispatch({ type: 'LOADING' });
+        axios.post('http://hiringtutors.azurewebsites.net/api/Auth/logout', {}, {
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
           }
         })
-          .then(response => {
-            console.log(response);
+          .then(res => {
             AsyncStorage.removeItem('@token');
             AsyncStorage.removeItem('@name');
             AsyncStorage.removeItem('@avatar');
+            dispatch({ type: 'SIGN_OUT' });
           })
-          .catch(error => console.log(error));
-        dispatch({ type: 'SIGN_OUT' });
+          .catch(err => {
+            console.log(err);
+            dispatch({ type: 'LOADED' });
+          });
       },
-      signUp: async data => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `AsyncStorage`
-        // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      signUp: async token => {
+        dispatch({ type: 'SIGN_IN', token });
       },
     }),
     []
@@ -167,10 +151,15 @@ const App = () => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
         }}>
           {state.isLoading ?
-            <Stack.Screen name="Login" component={SplashScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
             : state.token === null ? (
               <>
-                <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="Login"
+                  component={LoginScreen}
+                  options={{ headerShown: false }}
+                  initialParams={{ isLoading: state.isLoading }}
+                />
                 <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Quên mật khẩu' }} />
                 <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Đăng ký' }} />
                 <Stack.Screen name="TermOfService" component={TermOfServiceScreen} options={{ title: 'Điều khoản sử dụng' }} />
@@ -186,6 +175,7 @@ const App = () => {
                   <Stack.Screen name="ProfileTeacher" component={ProfileTeacherScreen} options={{ title: 'Hồ sơ gia sư' }} />
                   <Stack.Screen name="Evaluate" component={EvaluateScreen} options={{ title: 'Gửi đánh giá' }} />
                   <Stack.Screen name="Filter" component={FilterScreen} options={{ title: 'Bộ lọc' }} />
+                  <Stack.Screen name="BecomeTeacher" component={BecomeTeacherScreen} options={{ title: 'Hồ sơ gia sư' }} />
                 </>
               )}
         </Stack.Navigator>

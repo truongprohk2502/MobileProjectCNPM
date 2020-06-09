@@ -8,10 +8,11 @@ import { styles } from '../styles/Setting';
 import { mainColor } from '../constant/constant';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthContext } from '../App';
+import ImagePicker from 'react-native-image-picker';
 
 function Setting(props) {
     const [name, setName] = useState('');
-    const [avatar, setAvatar] = useState('null');
+    const [avatar, setAvatar] = useState('none');
     const { signOut } = useContext(AuthContext);
 
     useEffect(() => {
@@ -22,13 +23,36 @@ function Setting(props) {
         fetchUser();
     }, []);
 
+    const chooseFile = () => {
+        var options = {
+            title: 'Select Avatar',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
+        ImagePicker.showImagePicker(options, response => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else {
+                console.log(response);
+                setAvatar({ filePath: response });
+            }
+        });
+    };
+
     return (
         <View>
             <View style={styles.top}>
+                {/* <Image source={{ uri: 'data:image/jpeg;base64,' + avatar.filePath?.data }} style={styles.img} /> */}
                 <Image source={{ uri: avatar }} style={styles.img} />
-                <View style={styles.photo}>
-                    <Entypo name='camera' color='white' size={16} />
-                </View>
+                <TouchableWithoutFeedback onPress={chooseFile}>
+                    <View style={styles.photo}>
+                        <Entypo name='camera' color='white' size={16} />
+                    </View>
+                </TouchableWithoutFeedback>
                 <Text style={{ fontSize: 16, color: 'white' }}>{name}</Text>
                 <Text style={{ color: 'white' }}>Bpoint : 0</Text>
             </View>
@@ -89,7 +113,8 @@ function Setting(props) {
                     </TouchableWithoutFeedback>
                     <View style={styles.hr}></View>
                 </View>
-                <TouchableHighlight activeOpacity={0.6} underlayColor='#2bbba5' style={styles.btn}>
+                <TouchableHighlight activeOpacity={0.6} underlayColor='#2bbba5' style={styles.btn}
+                    onPress={() => props.navigation.navigate('BecomeTeacher')} >
                     <Text style={{ fontWeight: 'bold', color: 'white' }}>Trở thành gia sư</Text>
                 </TouchableHighlight>
             </View>

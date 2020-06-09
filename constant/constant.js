@@ -1,4 +1,5 @@
 export const mainColor = '#29dbc0';
+export const placeholderColor = '#a5a4a4';
 
 export const subjectsData = [
     { id: 1, label: 'Toán', value: 'math' },
