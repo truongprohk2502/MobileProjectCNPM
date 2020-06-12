@@ -4,10 +4,12 @@ import AsyncStorage from '@react-native-community/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import { styles } from '../styles/Login';
 import { AuthContext } from '../App';
 import axios from 'axios';
 import Splash from './Splash';
+import { BASE_URI } from '../constant/constant';
 
 function Login(props) {
     const [email, setEmail] = useState('');
@@ -15,7 +17,7 @@ function Login(props) {
     const [hidePass, setHidePass] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
 
-    const { signIn, signInWithGoogle } = useContext(AuthContext);
+    const { signIn } = useContext(AuthContext);
 
     const loginHandler = () => {
         if (email.trim() === '' || password.trim() === '') {
@@ -26,14 +28,49 @@ function Login(props) {
                 .then(res => {
                     AsyncStorage.setItem('@token', res.data.token);
                     AsyncStorage.setItem('@name', res.data.fullName);
-                    AsyncStorage.setItem('@avatar', res.data.avatar);
+                    let avatar = res.data.avatar;
+                    if (avatar.includes('http:\\') || avatar.includes('https:\\')) {
+                        AsyncStorage.setItem('@avatar', avatar);
+                    } else {
+                        AsyncStorage.setItem('@avatar', BASE_URI + avatar);
+                    }
                     signIn(res.data.token);
                 })
                 .catch(err => {
+                    console.log(err);
                     Alert.alert('', 'Email hoặc mật khẩu không đúng');
                     setIsLoading(false);
                     setPassword('');
                 });
+        }
+    }
+
+    const loginGoogle = async () => {
+        try {
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+            const userInfo = await GoogleSignin.signIn();
+            setIsLoading(true);
+            axios.post('http://hiringtutors.azurewebsites.net/api/Auth/login', { token: userInfo.idToken })
+                .then(res => {
+                    AsyncStorage.setItem('@token', res.data.token);
+                    AsyncStorage.setItem('@name', res.data.fullName);
+                    AsyncStorage.setItem('@avatar', res.data.avatar);
+                    signIn(res.data.token);
+                })
+                .catch(err => {
+                    Alert.alert('', 'Đã xảy ra lỗi');
+                    setIsLoading(false);
+                });
+        } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation (f.e. sign in) is in progress already
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                // play services not available or outdated
+            } else {
+                // some other error happened
+            }
         }
     }
 
@@ -78,12 +115,7 @@ function Login(props) {
                         >
                             <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Đăng nhập</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight activeOpacity={0.6} underlayColor='#3c5589' onPress={loginHandler} style={styles.facebookLoginBtn}>
-                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15 }}>
-                                <AntDesign name='facebook-square' color='white' size={15} /> | Đăng nhập bằng facebook
-                        </Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight activeOpacity={0.6} underlayColor='#c92c2c' onPress={signInWithGoogle} style={styles.googleLoginBtn}>
+                        <TouchableHighlight activeOpacity={0.6} underlayColor='#c92c2c' onPress={loginGoogle} style={styles.googleLoginBtn}>
                             <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15 }}>
                                 <AntDesign name='googleplus' color='white' size={15} /> | Đăng nhập bằng google +
                         </Text>

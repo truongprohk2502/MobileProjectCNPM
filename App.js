@@ -1,11 +1,11 @@
 import React, { useEffect, useReducer, createContext, useMemo } from 'react';
-import { Text, Alert } from 'react-native';
+import { Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeTabs from './components/HomeTab';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-import { GoogleSignin, statusCodes } from 'react-native-google-signin';
+import { GoogleSignin } from 'react-native-google-signin';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LoginScreen from './screens/Login';
 import ForgotPasswordScreen from './screens/ForgotPassword';
@@ -18,12 +18,11 @@ import EvaluateScreen from './screens/Evaluate';
 import FilterScreen from './screens/Filter';
 import SplashScreen from './screens/Splash';
 import BecomeTeacherScreen from './screens/BecomeTeacher';
-import axios from 'axios';
 
 const Stack = createStackNavigator();
 export const AuthContext = createContext();
 
-const App = (props) => {
+const App = () => {
 
   const [state, dispatch] = useReducer(
     (prevState, action) => {
@@ -67,51 +66,8 @@ const App = (props) => {
       signIn: async token => {
         dispatch({ type: 'SIGN_IN', token });
       },
-      signInWithGoogle: async () => {
-        try {
-          await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-          const userInfo = await GoogleSignin.signIn();
-          dispatch({ type: 'LOADING' });
-          axios.post('http://hiringtutors.azurewebsites.net/api/Auth/login', { token: userInfo.idToken })
-            .then(res => {
-              AsyncStorage.setItem('@token', res.data.token);
-              AsyncStorage.setItem('@name', res.data.fullName);
-              AsyncStorage.setItem('@avatar', res.data.avatar);
-              dispatch({ type: 'SIGN_IN', token: res.data.token });
-            })
-            .catch(err => {
-              Alert.alert('', 'Đã xảy ra lỗi');
-              dispatch({ type: 'LOADED' });
-            });
-        } catch (error) {
-          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            // user cancelled the login flow
-          } else if (error.code === statusCodes.IN_PROGRESS) {
-            // operation (f.e. sign in) is in progress already
-          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            // play services not available or outdated
-          } else {
-            // some other error happened
-          }
-        }
-      },
       signOut: async () => {
-        dispatch({ type: 'LOADING' });
-        axios.post('http://hiringtutors.azurewebsites.net/api/Auth/logout', {}, {
-          headers: {
-            'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
-          }
-        })
-          .then(res => {
-            AsyncStorage.removeItem('@token');
-            AsyncStorage.removeItem('@name');
-            AsyncStorage.removeItem('@avatar');
-            dispatch({ type: 'SIGN_OUT' });
-          })
-          .catch(err => {
-            console.log(err);
-            dispatch({ type: 'LOADED' });
-          });
+        dispatch({ type: 'SIGN_OUT' });
       },
       signUp: async token => {
         dispatch({ type: 'SIGN_IN', token });

@@ -70,18 +70,10 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    facebookLoginBtn: {
-        width: 240,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: '#4267b2',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: 10
-    },
     googleLoginBtn: {
         width: 240,
         height: 40,
+        marginTop: 10,
         borderRadius: 20,
         backgroundColor: 'red',
         alignItems: 'center',

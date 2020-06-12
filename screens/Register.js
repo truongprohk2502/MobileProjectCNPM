@@ -21,9 +21,12 @@ function Register(props) {
     const [phoneError, setPhoneError] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [cpass, setCpass] = useState('');
+    const [cpassError, setCpassError] = useState('');
     const [serviceRadio, setServiceRadio] = useState(false);
     const [serviceRadioError, setServiceRadioError] = useState('');
     const [hidePass, setHidePass] = useState(true);
+    const [chidePass, setChidePass] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
 
     const { signUp } = useContext(AuthContext);
@@ -66,8 +69,23 @@ function Register(props) {
         } else if (password.includes(' ')) {
             setPasswordError('Mật khẩu không được chứa ký tự khoảng trắng');
             err = true;
+        } else if (password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,32}$/) === null) {
+            setPasswordError('Mật khẩu bắt buộc có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt');
+            err = true;
+        } else if (password !== cpass) {
+            setPasswordError('Vui lòng xác minh lại mật khẩu');
+            setPassword('');
+            setCpass('');
+            err = true;
         } else {
             setPasswordError('');
+        }
+
+        if (cpass.trim() === '') {
+            setCpassError('Xác minh lại mật khẩu là bắt buộc');
+            err = true;
+        } else {
+            setCpassError('');
         }
 
         if (!serviceRadio) {
@@ -92,6 +110,7 @@ function Register(props) {
                     Alert.alert('', 'Email đã tồn tại');
                     props.navigation.setOptions({ headerShown: true });
                     setPassword('');
+                    setCpassError('');
                     setIsLoading(false);
                 });
         }
@@ -164,6 +183,20 @@ function Register(props) {
                             name={hidePass ? 'eye' : 'eye-slash'}
                             onPress={() => setHidePass(!hidePass)} />
                         <Text style={styles.error}>{passwordError}</Text>
+                    </View>
+                    <View>
+                        <TextInput
+                            value={cpass}
+                            onChangeText={setCpass}
+                            style={styles.registerInput}
+                            autoCompleteType='password'
+                            placeholder='Nhập lại mật khẩu'
+                            secureTextEntry={chidePass} />
+                        <FontAwesome
+                            style={styles.inputIcon}
+                            name={chidePass ? 'eye' : 'eye-slash'}
+                            onPress={() => setChidePass(!chidePass)} />
+                        <Text style={styles.error}>{cpassError}</Text>
                     </View>
                     <View style={{ marginTop: 5, marginRight: 15 }}>
                         <RadioForm
