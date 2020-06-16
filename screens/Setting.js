@@ -109,7 +109,7 @@ function Setting(props) {
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.hr}></View>
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={() => props.navigation.navigate('PersonalInfo', { setName })}>
                             <View style={styles.row}>
                                 <View style={{ ...styles.icon, marginLeft: 5 }}>
                                     <FontAwesome name='user' color={mainColor} size={18} />

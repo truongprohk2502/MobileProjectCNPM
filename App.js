@@ -18,6 +18,9 @@ import EvaluateScreen from './screens/Evaluate';
 import FilterScreen from './screens/Filter';
 import SplashScreen from './screens/Splash';
 import BecomeTeacherScreen from './screens/BecomeTeacher';
+import PersonalInfoScreen from './screens/PersonalInfo';
+import ChangePasswordScreen from './screens/ChangePassword';
+import ChangeAddressScreen from './screens/ChangeAddress';
 
 const Stack = createStackNavigator();
 export const AuthContext = createContext();
@@ -132,6 +135,9 @@ const App = () => {
                   <Stack.Screen name="Evaluate" component={EvaluateScreen} options={{ title: 'Gửi đánh giá' }} />
                   <Stack.Screen name="Filter" component={FilterScreen} options={{ title: 'Bộ lọc' }} />
                   <Stack.Screen name="BecomeTeacher" component={BecomeTeacherScreen} options={{ title: 'Hồ sơ gia sư' }} />
+                  <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} options={{ title: 'Thông tin cá nhân' }} />
+                  <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Thay đổi mật khẩu' }} />
+                  <Stack.Screen name="ChangeAddress" component={ChangeAddressScreen} options={{ title: 'Cập nhật địa chỉ' }} />
                 </>
               )}
         </Stack.Navigator>

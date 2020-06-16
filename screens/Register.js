@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TouchableWithoutFeedback, TextInput, ScrollView, TouchableOpacity, Alert, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, TextInput, Alert, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { styles } from '../styles/Register';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -118,7 +118,7 @@ function Register(props) {
 
     return (
         isLoading ? <Splash /> :
-            <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.container}>
                 <View style={styles.top}>
                     <Text style={styles.topText}>{`Đang tạo tài khoản dành cho ${userType === 'student' ? 'học viên' : 'gia sư'}`}</Text>
                 </View>
@@ -238,7 +238,7 @@ function Register(props) {
                         </TouchableHighlight>
                     </View>
                 </View>
-            </ScrollView>
+            </View>
     );
 }
 

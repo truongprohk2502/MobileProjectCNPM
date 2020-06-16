@@ -21,13 +21,28 @@ export const subjectsData = [
     { id: 16, label: 'Hội họa', value: 'arts' }
 ];
 
-export const provinces = [
-    { id: 1, label: 'Hà Nội', value: 'hanoi' },
-    { id: 2, label: 'Đà Nẵng', value: 'danang' },
-    { id: 3, label: 'Hồ Chí Minh', value: 'hochiminh' },
-    { id: 4, label: 'Hà Tĩnh', value: 'hatinh' },
-    { id: 5, label: 'Thừa Thiên - Huế', value: 'hue' },
-    { id: 6, label: 'Quảng Nam', value: 'quangnam' },
+export const PROVINCES = [
+    { id: 1, name: 'Hà Nội' },
+    { id: 2, name: 'Đà Nẵng' },
+    { id: 3, name: 'Hồ Chí Minh' }
+];
+
+export const DISTRICTS = [
+    { id: 1, provinceId: 1, name: 'Cầu Giấy' },
+    { id: 2, provinceId: 1, name: 'Hai Bà Trưng' },
+    { id: 3, provinceId: 1, name: 'Ba Đình' },
+    { id: 4, provinceId: 1, name: 'Hoàn Kiếm' },
+    { id: 5, provinceId: 1, name: 'Thanh Xuân' },
+    { id: 6, provinceId: 2, name: 'Liên Chiểu' },
+    { id: 7, provinceId: 2, name: 'Thanh Khê' },
+    { id: 8, provinceId: 2, name: 'Hải Châu' },
+    { id: 9, provinceId: 2, name: 'Sơn Trà' },
+    { id: 10, provinceId: 2, name: 'Cầm Lệ' },
+    { id: 11, provinceId: 3, name: 'Quận 1' },
+    { id: 12, provinceId: 3, name: 'Quận 2' },
+    { id: 13, provinceId: 3, name: 'Quận 5' },
+    { id: 14, provinceId: 3, name: 'Quận 7' },
+    { id: 15, provinceId: 3, name: 'Quận 9' },
 ];
 
 export const themes = [
