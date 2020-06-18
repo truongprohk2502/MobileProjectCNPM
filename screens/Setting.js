@@ -1,16 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, Image, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, TouchableHighlight, TouchableWithoutFeedback, Alert } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/Setting';
-import { mainColor } from '../constant/constant';
+import { mainColor, BASE_URI } from '../constant/constant';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthContext } from '../App';
 import ImagePicker from 'react-native-image-picker';
-import axios from 'axios';
 import Splash from './Splash';
+import RNFetchBlob from 'rn-fetch-blob'
+import Axios from 'axios';
 
 function Setting(props) {
     const [name, setName] = useState('');
@@ -26,9 +27,14 @@ function Setting(props) {
         fetchUser();
     }, []);
 
-    const chooseFile = () => {
+    const chooseFile = async () => {
+        const token = await AsyncStorage.getItem('@token');
         var options = {
-            title: 'Select Avatar',
+            title: 'Tải ảnh đại diện',
+            cancelButtonTitle: 'Thoát',
+            takePhotoButtonTitle: 'Mở máy ảnh',
+            chooseFromLibraryButtonTitle: 'Mở thư viện ảnh',
+            mediaType: 'photo',
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -40,8 +46,21 @@ function Setting(props) {
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else {
-                console.log(response);
-                setAvatar({ filePath: response });
+                setIsLoading(true);
+                RNFetchBlob.fetch('POST', 'http://hiringtutors.azurewebsites.net/api/Image/uploadimage', {
+                    Authorization: "Bearer " + token,
+                    'Content-Type': 'multipart/form-data',
+                }, [
+                    { name: 'File', filename: response.fileName, type: response.type, data: response.data },
+                    { name: 'Path', data: 'UserAvatar' },
+                ]).then((res) => {
+                    const urlImage = BASE_URI + 'Resources/Images/UserAvatar/' + res.data;
+                    AsyncStorage.setItem('@avatar', urlImage);
+                    setAvatar(urlImage);
+                    setIsLoading(false);
+                }).catch((err) => {
+                    console.log(err);
+                })
             }
         });
     };
@@ -49,7 +68,7 @@ function Setting(props) {
     const signOutHandler = async () => {
         props.navigation.setOptions({ headerShown: false });
         setIsLoading(true);
-        axios.post('http://hiringtutors.azurewebsites.net/api/Auth/logout', {}, {
+        Axios.post('http://hiringtutors.azurewebsites.net/api/Auth/logout', {}, {
             headers: {
                 'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
             }
@@ -78,7 +97,6 @@ function Setting(props) {
                         </View>
                     </TouchableWithoutFeedback>
                     <Text style={{ fontSize: 16, color: 'white' }}>{name}</Text>
-                    <Text style={{ color: 'white' }}>Bpoint : 0</Text>
                 </View>
                 <View style={styles.container}>
                     <View style={styles.widgets}>
