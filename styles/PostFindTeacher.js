@@ -31,7 +31,8 @@ export const styles = StyleSheet.create({
         shadowColor: "#000",
         elevation: 4,
         backgroundColor: 'white',
-        borderRadius: 10
+        borderRadius: 10,
+        paddingVertical: 10
     },
     reqRow: {
         flexDirection: 'row'
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
     },
     inputReq: {
         flex: 8,
-        padding: 10,
+        paddingHorizontal: 10,
     },
     detailDescription: {
         backgroundColor: 'white',
@@ -113,5 +114,11 @@ export const styles = StyleSheet.create({
         backgroundColor: mainColor,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    marquee: {
+        fontSize: 16,
+        width: 260,
+        marginVertical: 10,
+        marginLeft: 2
     }
 });

@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
-import { mainColor } from "../constant/constant";
+import { mainColor, placeholderColor } from "../constant/constant";
 
 export const styles = StyleSheet.create({
     container: {
-
+        paddingBottom: 10
     },
     topBG: {
         backgroundColor: mainColor,
@@ -54,13 +54,79 @@ export const styles = StyleSheet.create({
         width: 25,
         marginTop: 4
     },
+    iconScecial: {
+        marginTop: 1,
+        marginRight: 8
+    },
     inputText: {
         fontSize: 16,
         paddingVertical: 0
+    },
+    inputTextSpecial: {
+        fontSize: 16,
+        paddingVertical: 0,
+        marginLeft: 9,
+        flex: 10,
     },
     picker: {
         width: 300,
         marginVertical: -10,
         marginHorizontal: -4
+    },
+    arrowIcon: {
+        color: placeholderColor,
+        marginTop: 4,
+        fontSize: 20,
+        marginLeft: 6
+    },
+    headerSize: {
+        fontSize: 16,
+        marginVertical: 10
+    },
+    introduction: {
+        backgroundColor: 'white',
+        shadowColor: 'black',
+        elevation: 4,
+        textAlignVertical: 'top',
+        paddingHorizontal: 10,
+        fontSize: 16,
+        borderRadius: 10
+    },
+    timeWeekView: {
+        backgroundColor: 'white',
+        shadowColor: 'black',
+        elevation: 4,
+        padding: 10,
+        borderRadius: 10
+    },
+    marquee: {
+        paddingVertical: 3,
+        fontSize: 16,
+        width: 280
+    },
+    marqueeSpecial: {
+        paddingVertical: 3,
+        fontSize: 16,
+        width: 275
+    },
+    continueBtn: {
+        marginVertical: 10,
+        padding: 5,
+        borderRadius: 8,
+        shadowColor: "#000",
+        elevation: 4,
+        backgroundColor: 'white',
+        alignSelf: 'center',
+        flexDirection: 'row'
+    },
+    continueText: {
+        color: mainColor,
+        fontSize: 20,
+    },
+    continueArrow: {
+        color: mainColor,
+        marginTop: 4,
+        fontSize: 20,
+        marginLeft: 6
     }
 });

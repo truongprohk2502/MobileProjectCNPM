@@ -2,11 +2,6 @@ import { StyleSheet } from "react-native";
 import { mainColor } from "../constant/constant";
 
 export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
     header: {
         width: '100%',
         height: 180,
@@ -82,6 +77,7 @@ export const styles = StyleSheet.create({
     footer: {
         position: 'absolute',
         top: 620,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignSelf: 'center'
     }
 });

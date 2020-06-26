@@ -21,9 +21,15 @@ import BecomeTeacherScreen from './screens/BecomeTeacher';
 import PersonalInfoScreen from './screens/PersonalInfo';
 import ChangePasswordScreen from './screens/ChangePassword';
 import ChangeAddressScreen from './screens/ChangeAddress';
+import SubjectSelectionScreen from './screens/SubjectSelection';
+import UploadImageScreen from './screens/UploadImage';
+import ManageNewsScreen from './screens/ManageNews';
+import NewsDetailsScreen from './screens/NewsDetails';
 
 const Stack = createStackNavigator();
 export const AuthContext = createContext();
+
+// console.disableYellowBox = true;
 
 const App = () => {
 
@@ -82,18 +88,18 @@ const App = () => {
   const getTitle = (route) => {
     const routeName = route.state
       ? route.state.routes[route.state.index].name
-      : route.params?.screen || <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tin tức</Text>;
+      : route.params?.screen || <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tin tức cho học viên</Text>;
     switch (routeName) {
-      case 'News':
+      case 'Tutor':
         return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tin tức cho học viên</Text>;
-      case 'Message':
-        return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tin nhắn</Text>;
+      case 'News':
+        return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tin tức cho gia sư</Text>;
       case 'Search':
-        return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tìm kiếm gia sư</Text>;
+        return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tìm kiếm</Text>;
       case 'Notification':
         return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Thông báo</Text>;
       case 'Setting':
-        return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Danh mục học viên</Text>;
+        return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Danh mục</Text>;
       default:
         return <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Tin tức cho học viên</Text>;
     }
@@ -138,6 +144,10 @@ const App = () => {
                   <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} options={{ title: 'Thông tin cá nhân' }} />
                   <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Thay đổi mật khẩu' }} />
                   <Stack.Screen name="ChangeAddress" component={ChangeAddressScreen} options={{ title: 'Cập nhật địa chỉ' }} />
+                  <Stack.Screen name="SubjectSelection" component={SubjectSelectionScreen} options={{ title: 'Lựa chọn chủ đề' }} />
+                  <Stack.Screen name="UploadImage" component={UploadImageScreen} options={{ title: 'Hồ sơ gia sư' }} />
+                  <Stack.Screen name="ManageNews" component={ManageNewsScreen} options={{ title: 'Quản lý yêu cầu' }} />
+                  <Stack.Screen name="NewsDetails" component={NewsDetailsScreen} options={{ title: 'Thông tin bài đăng' }} />
                 </>
               )}
         </Stack.Navigator>

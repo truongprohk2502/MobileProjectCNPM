@@ -3,7 +3,8 @@ import { mainColor } from "../constant/constant";
 
 export const styles = StyleSheet.create({
     container: {
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1
     },
     top: {
         width: '100%',

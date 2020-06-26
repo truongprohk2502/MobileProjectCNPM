@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableWithoutFeedback, TouchableHighlight } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,10 +7,10 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { styles } from '../styles/PersonalInfo';
 import { mainColor } from '../constant/constant';
 import MarqueeText from 'react-native-marquee';
-import { TouchableHighlight } from 'react-native-gesture-handler';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import Splash from './Splash';
+import { showToastWithGravity } from '../constant/function';
 
 function PersonalInfo(props) {
     const [fullname, setFullname] = useState('');
@@ -19,9 +19,11 @@ function PersonalInfo(props) {
     const [address, setAddress] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [addressData, setAddressData] = useState({ value: '' });
+    const [roles, setRoles] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
+            setRoles(await AsyncStorage.getItem('@roles'));
             Axios.get('http://hiringtutors.azurewebsites.net/api/User/GetUserInfo', {
                 headers: {
                     'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
@@ -33,7 +35,7 @@ function PersonalInfo(props) {
                     setPhone(res.data.phoneNumber);
                     setAddressData(res.data.addressView);
                     if (res.data.addressView !== null) {
-                        setAddress(`${res.data.addressView.houseNumber} ${res.data.addressView.street}, ${res.data.addressView.district}, ${res.data.addressView.city}`);
+                        setAddress(`${res.data.addressView.houseNumber} ${res.data.addressView.street}, ${res.data.addressView.commune}, ${res.data.addressView.district}, ${res.data.addressView.city}`);
                     } else {
                         setAddress('Nhập địa chỉ');
                     }
@@ -45,21 +47,21 @@ function PersonalInfo(props) {
     }, [address]);
 
     const updateAddress = (addr) => {
-        setAddress(`${addr.houseNumber} ${addr.street}, ${addr.district}, ${addr.city}`);
+        setAddress(`${addr.houseNumber} ${addr.street}, ${addr.commune}, ${addr.district}, ${addr.city}`);
     }
 
     const saveHandler = async () => {
         if (fullname.trim() === '') {
-            Alert.alert('', 'Họ tên không được để trống');
+            showToastWithGravity('Họ tên không được để trống');
         } else {
             Axios.put('http://hiringtutors.azurewebsites.net/api/User/EditUserInfor', {
                 userInfoView: {
                     fullName: fullname,
                     phone
                 },
-                addressView: {
-                    status: false
-                }
+                hasUpdateInfoUser: true,
+                addressView: null,
+                hasUpdateAddress: false
             }, {
                 headers: {
                     'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
@@ -68,7 +70,7 @@ function PersonalInfo(props) {
                 .then(res => {
                     AsyncStorage.setItem('@name', fullname);
                     props.route.params.setName(fullname);
-                    Alert.alert('', 'Lưu thông tin thành công');
+                    showToastWithGravity('Lưu thông tin thành công');
                 })
                 .catch(err => console.log(err));
         }
@@ -129,6 +131,14 @@ function PersonalInfo(props) {
                         <Ionicons name='ios-arrow-forward' color={mainColor} size={24} />
                     </View>
                 </TouchableWithoutFeedback>
+                {(roles.includes('Tutor new') || roles.includes('Tutor')) &&
+                    <TouchableWithoutFeedback onPress={() => props.navigation.navigate('BecomeTeacher')}>
+                        <View style={{ ...styles.btn, marginTop: 10, backgroundColor: mainColor }}>
+                            <FontAwesome name='mortar-board' color='white' size={18} style={{ ...styles.btnIcon, marginTop: 4 }} />
+                            <Text style={{ ...styles.btnText, color: 'white' }}>Thông tin gia sư</Text>
+                            <Ionicons name='ios-arrow-forward' color='white' size={24} />
+                        </View>
+                    </TouchableWithoutFeedback>}
                 <View style={styles.saveBtnView}>
                     <TouchableHighlight
                         activeOpacity={0.6}

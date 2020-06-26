@@ -5,14 +5,30 @@ export const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 10
     },
+    top: {
+        alignItems: 'center',
+        backgroundColor: mainColor,
+        height: 40,
+    },
+    searchLink: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: 300,
+        height: 40,
+        borderRadius: 20,
+        shadowColor: "#000",
+        elevation: 4,
+        backgroundColor: 'white',
+        marginTop: 20
+    },
     img: {
         width: '100%',
-        height: 210,
+        height: 250,
         resizeMode: 'contain'
     },
     imgText: {
         width: 220,
-        marginTop: -180,
+        marginTop: -210,
         paddingLeft: 12
     },
     requestBtn: {
@@ -24,58 +40,25 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    newsInfo: {
+    teacherInfo: {
         flexDirection: 'row',
         shadowColor: "#000",
         elevation: 4,
         backgroundColor: 'white',
+        borderRadius: 10,
         marginBottom: 10,
         marginHorizontal: 10,
-        borderRadius: 10,
     },
-    info: {
-        flex: 5,
-        marginLeft: 10,
-        marginVertical: 5
+    imgElem: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        resizeMode: 'cover'
     },
-    button: {
+    infoElem: {
         flex: 2,
-        paddingTop: 25
-    },
-    icon: {
-        width: 20,
-        fontSize: 16,
-        marginTop: 2
-    },
-    marquee: {
-        fontWeight: 'bold',
-        color: mainColor,
-        width: 260,
-        fontSize: 16
-    },
-    price: {
-        fontWeight: 'bold',
-        color: 'orange'
-    },
-    btn: {
-        paddingHorizontal: 5,
-        height: 25,
-        borderRadius: 15,
-        backgroundColor: mainColor,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    btnText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 14
-    },
-    fee: {
-        color: mainColor,
-        fontWeight: 'bold',
-        fontSize: 12,
-        marginTop: 2,
-        marginLeft: 1
+        marginLeft: -10,
+        marginTop: 13
     },
     widgets: {
         height: '100%',
@@ -84,15 +67,18 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-end',
         top: 0,
         right: 0,
-        padding: 10,
-        marginLeft: 10,
+        padding: 10
     },
-    btn2: {
+    btn: {
         paddingHorizontal: 15,
         height: 30,
         borderRadius: 15,
         backgroundColor: mainColor,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    marquee: {
+        paddingVertical: 0,
+        width: 150
     },
 });

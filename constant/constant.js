@@ -24,7 +24,6 @@ export const subjectsData = [
 export const PROVINCES = [
     { id: 1, name: 'Hà Nội' },
     { id: 2, name: 'Đà Nẵng' },
-    { id: 3, name: 'Hồ Chí Minh' }
 ];
 
 export const DISTRICTS = [
@@ -32,17 +31,46 @@ export const DISTRICTS = [
     { id: 2, provinceId: 1, name: 'Hai Bà Trưng' },
     { id: 3, provinceId: 1, name: 'Ba Đình' },
     { id: 4, provinceId: 1, name: 'Hoàn Kiếm' },
-    { id: 5, provinceId: 1, name: 'Thanh Xuân' },
-    { id: 6, provinceId: 2, name: 'Liên Chiểu' },
-    { id: 7, provinceId: 2, name: 'Thanh Khê' },
-    { id: 8, provinceId: 2, name: 'Hải Châu' },
-    { id: 9, provinceId: 2, name: 'Sơn Trà' },
-    { id: 10, provinceId: 2, name: 'Cầm Lệ' },
-    { id: 11, provinceId: 3, name: 'Quận 1' },
-    { id: 12, provinceId: 3, name: 'Quận 2' },
-    { id: 13, provinceId: 3, name: 'Quận 5' },
-    { id: 14, provinceId: 3, name: 'Quận 7' },
-    { id: 15, provinceId: 3, name: 'Quận 9' },
+    { id: 5, provinceId: 2, name: 'Liên Chiểu' },
+    { id: 6, provinceId: 2, name: 'Thanh Khê' },
+    { id: 7, provinceId: 2, name: 'Hải Châu' },
+    { id: 8, provinceId: 2, name: 'Cầm Lệ' },
+];
+
+export const COMMUNES = [
+    { id: 1, districtId: 1, name: 'Mai Dịch' },
+    { id: 2, districtId: 1, name: 'Dịch Vọng' },
+    { id: 3, districtId: 1, name: 'Nghĩa Tân' },
+    { id: 4, districtId: 1, name: 'Trung Hòa' },
+    { id: 5, districtId: 2, name: 'Quỳnh Lôi' },
+    { id: 6, districtId: 2, name: 'Bạch Mai' },
+    { id: 7, districtId: 2, name: 'Vĩnh Tuy' },
+    { id: 8, districtId: 2, name: 'Trương Định' },
+    { id: 9, districtId: 3, name: 'Giảng Võ' },
+    { id: 10, districtId: 3, name: 'Kim Mã' },
+    { id: 11, districtId: 3, name: 'Ngọc Hà' },
+    { id: 12, districtId: 3, name: 'Phúc Xá' },
+    { id: 13, districtId: 4, name: 'Đồng Xuân' },
+    { id: 14, districtId: 4, name: 'Hàng Bài' },
+    { id: 15, districtId: 4, name: 'Hàng Bông' },
+    { id: 16, districtId: 4, name: 'Tràng Tiền' },
+    { id: 17, districtId: 5, name: 'Hòa Hiệp Bắc' },
+    { id: 18, districtId: 5, name: 'Hòa Hiệp Nam' },
+    { id: 19, districtId: 5, name: 'Hòa Khánh Bắc' },
+    { id: 20, districtId: 5, name: 'Hòa Khánh Nam' },
+    { id: 21, districtId: 5, name: 'Hòa Minh' },
+    { id: 22, districtId: 6, name: 'An Khê' },
+    { id: 23, districtId: 6, name: 'Hòa Khê' },
+    { id: 24, districtId: 6, name: 'Tam Thuận' },
+    { id: 25, districtId: 6, name: 'Tân Chính' },
+    { id: 26, districtId: 7, name: 'Phước Ninh' },
+    { id: 27, districtId: 7, name: 'Thanh Bình' },
+    { id: 28, districtId: 7, name: 'Thuận Phước' },
+    { id: 29, districtId: 7, name: 'Nam Dương' },
+    { id: 30, districtId: 8, name: 'Hòa An' },
+    { id: 31, districtId: 8, name: 'Hòa Phát' },
+    { id: 32, districtId: 8, name: 'Hòa Xuân' },
+    { id: 33, districtId: 8, name: 'Khê Trung' },
 ];
 
 export const themes = [
@@ -61,4 +89,38 @@ export const jobs = [
     { id: 4, label: 'Giảng viên đại học', value: 'university-teacher' },
     { id: 5, label: 'Chuyên gia', value: 'best' },
     { id: 6, label: 'Người nước ngoài', value: 'foreign' },
+];
+
+export const JOBS = [
+    { id: 1, name: 'Sinh viên' },
+    { id: 2, name: 'Người đi làm' },
+    { id: 3, name: 'Giáo viên mầm non' },
+    { id: 4, name: 'Giảng viên đại học' },
+    { id: 5, name: 'Chuyên gia' },
+    { id: 6, name: 'Người nước ngoài' },
+];
+
+export const STUDY_TYPE = [
+    { id: 1, name: 'Online' },
+    { id: 2, name: 'Offline' },
+    { id: 3, name: 'Cả 2' },
+];
+
+export const TUTOR_STATUS = [
+    { id: 1, name: 'NEW' },
+    { id: 2, name: 'WAIT_TO_VERIFY' },
+    { id: 3, name: 'INVALID' },
+    { id: 4, name: 'ACTIVE' },
+    { id: 5, name: 'DISABLE' },
+];
+
+export const TIME_IN_DAY = [
+    { id: 0, name: 'NONE', morning: false, afternoon: false, evening: false },
+    { id: 1, name: 'ALL_DAY', morning: true, afternoon: true, evening: true },
+    { id: 2, name: 'MORNING', morning: true, afternoon: false, evening: false },
+    { id: 3, name: 'AFTERNOON', morning: false, afternoon: true, evening: false },
+    { id: 4, name: 'NIGHT', morning: false, afternoon: false, evening: true },
+    { id: 5, name: 'MOR_AFTER', morning: true, afternoon: true, evening: false },
+    { id: 6, name: 'MOR_NIGHT', morning: true, afternoon: false, evening: true },
+    { id: 7, name: 'AFTER_NIGHT', morning: false, afternoon: true, evening: true },
 ];

@@ -103,5 +103,9 @@ export const styles = StyleSheet.create({
         backgroundColor: mainColor,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    marquee: {
+        paddingVertical: 0,
+        width: 110
     }
 });

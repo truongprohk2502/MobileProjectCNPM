@@ -5,9 +5,34 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { mainColor } from '../constant/constant';
+import { mainColor, BASE_URI } from '../constant/constant';
+import MarqueeText from 'react-native-marquee';
+import { formatMoney } from '../constant/function';
 
 function ProfileTeacher(props) {
+    const { tutorData } = props.route.params;
+
+    const getSubjectsText = (subjects) => {
+        if (subjects) {
+            const txt = subjects.reduce((str, item) => str + item.name + ', ', '');
+            return txt.slice(0, txt.length - 2);
+        }
+        return 'null';
+    }
+
+    const getStudyType = (type) => {
+        switch (type) {
+            case 1:
+                return 'Online';
+            case 2:
+                return 'Offline';
+            case 3:
+                return 'Online, Offline';
+            default:
+                return '';
+        }
+    }
+
     return (
         <View style={{ flex: 1, paddingBottom: 50 }}>
             <ScrollView>
@@ -15,13 +40,13 @@ function ProfileTeacher(props) {
                 <View style={styles.container}>
                     <View style={styles.head}>
                         <View>
-                            <Image source={require('../asset/images/ronaldo.jpg')} style={styles.img} />
+                            <Image source={{ uri: BASE_URI + tutorData.avatar }} style={styles.img} />
                             <View style={styles.star}>
                                 <AntDesign name='star' color='orange' style={{ marginRight: 5, marginTop: 3 }} />
                                 <Text>0</Text>
                             </View>
                         </View>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>Cristiano Ronaldo</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>{tutorData.name}</Text>
                         <Text>0 người đánh giá</Text>
                         <TouchableHighlight onPress={() => props.navigation.navigate('Evaluate')} activeOpacity={0.6} underlayColor='#2bbba5' style={styles.btn}>
                             <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Đánh giá</Text>
@@ -30,40 +55,39 @@ function ProfileTeacher(props) {
                     <View style={styles.infoRow}>
                         <View style={{ ...styles.infoCol, marginRight: 15 }}>
                             <Entypo name='book' color={mainColor} size={18} style={{ marginRight: 5 }} />
-                            <Text>Bóng đá, Thể hình</Text>
+                            <MarqueeText
+                                style={styles.marquee}
+                                duration={3000}
+                                marqueeOnStart
+                                loop
+                                marqueeDelay={1000}
+                                marqueeResetDelay={1000} >{getSubjectsText(tutorData.subjects)}</MarqueeText>
                         </View>
                         <View style={styles.infoCol}>
                             <FontAwesome name='dollar' color={mainColor} size={18} style={{ marginRight: 8, marginLeft: 4 }} />
-                            <Text>500,000 đ/h</Text>
+                            <Text>{formatMoney(1000 * tutorData.tuitionPerHour)} đ/h</Text>
                         </View>
                     </View>
                     <View style={styles.infoRow}>
                         <View style={{ ...styles.infoCol, marginRight: 15 }}>
                             <Entypo name='location-pin' color={mainColor} size={18} style={{ marginRight: 5 }} />
-                            <Text>Hồ Chí Minh</Text>
+                            <Text>{tutorData.address.city}</Text>
                         </View>
                         <View style={styles.infoCol}>
                             <AntDesign name='database' color={mainColor} size={18} style={{ marginRight: 5 }} />
-                            <Text>Online, Offline</Text>
+                            <Text>{getStudyType(tutorData.teachingType)}</Text>
                         </View>
                     </View>
                     <View style={styles.info}>
                         <View style={styles.headerForm}><Text style={{ fontSize: 18, color: 'white' }}>THÔNG TIN</Text></View>
                         <View style={styles.infoText}>
-                            <Text>Hiện đang là giảng viên đại học Bôn Ba</Text>
-                            <Text>Là tiến sĩ chuyên ngành bóng đá bên Italy</Text>
-                            <Text>Tốt nghiệp chuyên ngành chém gió tại Đại học Juventus</Text>
-                            <Text>Có thể nhận dạy Toán, Lý, Hóa và đặc biệt là bằng tiếng Anh và tiếng Pháp</Text>
+                            <Text style={{ textAlign: 'justify' }}>{tutorData.introduction}</Text>
                         </View>
                     </View>
                     <View style={styles.info}>
                         <View style={styles.headerForm}><Text style={{ fontSize: 18, color: 'white' }}>CHỦ ĐỀ DẠY</Text></View>
                         <View style={styles.infoText}>
-                            <View style={styles.theme}><Text>Toán ôn thi đại học</Text></View>
-                            <View style={styles.theme}><Text>Toán ôn thi THPT</Text></View>
-                            <View style={styles.theme}><Text>Tiếng Anh giao tiếp</Text></View>
-                            <View style={styles.theme}><Text>Tiếng Anh ngữ pháp</Text></View>
-                            <View style={styles.theme}><Text>Luyện thi IELTS</Text></View>
+                            {tutorData.subjects && tutorData.subjects.map(s => <View key={s.id} style={styles.theme}><Text>{s.name}</Text></View>)}
                         </View>
                     </View>
                     <View style={styles.info}>
