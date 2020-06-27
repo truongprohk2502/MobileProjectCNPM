@@ -103,6 +103,7 @@ function Register(props) {
             axios.post('http://hiringtutors.azurewebsites.net/api/Auth/register', { name: fullname, email, password, phone })
                 .then(res => {
                     AsyncStorage.setItem('@token', res.data.token);
+                    AsyncStorage.setItem('@email', res.data.email);
                     AsyncStorage.setItem('@name', res.data.fullName);
                     AsyncStorage.setItem('@avatar', BASE_URI + res.data.avatar);
                     AsyncStorage.setItem('@roles', res.data.roles.join('-'));

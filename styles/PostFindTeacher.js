@@ -120,5 +120,45 @@ export const styles = StyleSheet.create({
         width: 260,
         marginVertical: 10,
         marginLeft: 2
+    },
+    tutorForm: {
+        shadowColor: "#000",
+        elevation: 4,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingTop: 10
+    },
+    tutorRow: {
+        flexDirection: 'row',
+        marginBottom: 5
+    },
+    img: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+    },
+    circle: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: 'lime',
+        marginTop: -10
+    },
+    tutorName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginLeft: 10,
+        marginTop: 0,
+        color: mainColor,
+    },
+    tutorStatus: {
+        fontWeight: 'bold',
+        marginLeft: 10
+    },
+    action: {
+        flex: 1,
+        width: 100,
+        marginTop: -10
     }
 });

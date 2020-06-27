@@ -2,6 +2,8 @@ export const mainColor = '#29dbc0';
 export const placeholderColor = '#a5a4a4';
 export const BASE_URI = 'http://hiringtutors.azurewebsites.net/';
 
+export const PAGE_SIZE = 4;
+
 export const subjectsData = [
     { id: 1, label: 'Toán', value: 'math' },
     { id: 2, label: 'Vật lý', value: 'phisics' },
@@ -103,7 +105,7 @@ export const JOBS = [
 export const STUDY_TYPE = [
     { id: 1, name: 'Online' },
     { id: 2, name: 'Offline' },
-    { id: 3, name: 'Cả 2' },
+    { id: 3, name: 'Online, Offline' },
 ];
 
 export const TUTOR_STATUS = [

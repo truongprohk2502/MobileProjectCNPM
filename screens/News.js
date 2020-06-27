@@ -6,7 +6,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { mainColor } from '../constant/constant';
+import { mainColor, PAGE_SIZE } from '../constant/constant';
 import MarqueeText from 'react-native-marquee';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
@@ -21,7 +21,7 @@ function Message(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-            Axios.get(`http://hiringtutors.azurewebsites.net/api/News/List?pageNum=${page}&pageSize=3`, {
+            Axios.get(`http://hiringtutors.azurewebsites.net/api/News/List?pageNum=${page}&pageSize=${PAGE_SIZE}`, {
                 headers: {
                     'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
                 }
@@ -29,7 +29,7 @@ function Message(props) {
                 .then(res => {
                     setIsLoading(false);
                     setNewsArr(res.data);
-                    if (res.data.length < 3) {
+                    if (res.data.length < PAGE_SIZE) {
                         setIsLoadmore(false);
                     }
                 })
@@ -39,7 +39,7 @@ function Message(props) {
     }, []);
 
     const loadMore = async () => {
-        Axios.get(`http://hiringtutors.azurewebsites.net/api/News/List?pageNum=${page + 1}&pageSize=3`, {
+        Axios.get(`http://hiringtutors.azurewebsites.net/api/News/List?pageNum=${page + 1}&pageSize=${PAGE_SIZE}`, {
             headers: {
                 'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
             }
@@ -47,7 +47,7 @@ function Message(props) {
             .then(res => {
                 setPage(page + 1);
                 setNewsArr(newsArr.concat(res.data));
-                if (res.data.length < 3) {
+                if (res.data.length < PAGE_SIZE) {
                     setIsLoadmore(false);
                 }
             })
@@ -58,7 +58,7 @@ function Message(props) {
 
     const refreshHandler = async () => {
         setRefreshing(true);
-        Axios.get(`http://hiringtutors.azurewebsites.net/api/News/List?pageNum=1&pageSize=3`, {
+        Axios.get(`http://hiringtutors.azurewebsites.net/api/News/List?pageNum=1&pageSize=${PAGE_SIZE}`, {
             headers: {
                 'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
             }
@@ -66,7 +66,7 @@ function Message(props) {
             .then(res => {
                 setRefreshing(false);
                 setNewsArr(res.data);
-                if (res.data.length < 3) {
+                if (res.data.length < PAGE_SIZE) {
                     setIsLoadmore(false);
                 }
             })
@@ -136,7 +136,7 @@ function Message(props) {
                                 <View style={styles.widgets}>
                                     <AntDesign name='hearto' size={18} />
                                     <Ionicons name='ios-arrow-forward' size={18} style={{ marginRight: 5 }} />
-                                    <Text style={{ color: 'red', marginRight: 3 }}>{item.inforNewsView.tutorCandicateIds.length} đề nghị dạy</Text>
+                                    <Text style={{ color: 'red', marginRight: 3 }}>{item.inforNewsView.tutorNewsViews.length} đề nghị dạy</Text>
                                     <TouchableHighlight activeOpacity={0.6} underlayColor='#2bbba5' style={styles.btn2}>
                                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Nhận lớp</Text>
                                     </TouchableHighlight>

@@ -49,6 +49,7 @@ function Setting(props) {
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else {
+                setIsLoading(true);
                 RNFetchBlob.fetch('POST', 'http://hiringtutors.azurewebsites.net/api/Image/uploadimage', {
                     Authorization: "Bearer " + token,
                     'Content-Type': 'multipart/form-data',
@@ -59,6 +60,7 @@ function Setting(props) {
                     const urlImage = BASE_URI + 'Resources/Images/UserAvatar/' + res.data;
                     AsyncStorage.setItem('@avatar', urlImage);
                     setAvatar(urlImage);
+                    setIsLoading(false);
                     showToastWithGravity('Tải ảnh đại diện thành công');
                 }).catch((err) => {
                     console.log(err);
@@ -149,7 +151,7 @@ function Setting(props) {
                         </TouchableWithoutFeedback>
                         <View style={styles.hr}></View>
                     </View>
-                    {roles !== '' && (!roles.includes('Tutor new') || !roles.includes('Tutor')) &&
+                    {roles !== '' && !roles.includes('Tutor new') && !roles.includes('Tutor') &&
                         <TouchableHighlight activeOpacity={0.6} underlayColor='#2bbba5' style={styles.btn}
                             onPress={() => props.navigation.navigate('BecomeTeacher')} >
                             <Text style={{ fontWeight: 'bold', color: 'white' }}>Trở thành gia sư</Text>

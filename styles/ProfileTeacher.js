@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         marginTop: 10,
-        width: '100%'
+        width: '100%',
     },
     headerForm: {
         backgroundColor: mainColor,
@@ -107,5 +107,34 @@ export const styles = StyleSheet.create({
     marquee: {
         paddingVertical: 0,
         width: 110
+    },
+    formNews: {
+        shadowColor: 'black',
+        elevation: 4,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingTop: 10
+    },
+    newsTitle: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+        color: mainColor
+    },
+    redTitle: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+        color: 'orange',
+        marginBottom: 5
+    },
+    hr: {
+        height: 1,
+        width: 300,
+        backgroundColor: 'black',
+        alignSelf: 'center',
+        opacity: 0.3,
+        marginVertical: 10
     }
 });

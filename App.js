@@ -25,6 +25,8 @@ import SubjectSelectionScreen from './screens/SubjectSelection';
 import UploadImageScreen from './screens/UploadImage';
 import ManageNewsScreen from './screens/ManageNews';
 import NewsDetailsScreen from './screens/NewsDetails';
+import Axios from 'axios';
+import { BASE_URI } from './constant/constant';
 
 const Stack = createStackNavigator();
 export const AuthContext = createContext();
@@ -59,11 +61,21 @@ const App = () => {
 
   useEffect(() => {
     const fetchToken = async () => {
-      let token;
-      try {
-        token = await AsyncStorage.getItem('@token');
-      } catch (e) {
-        console.log(e);
+      const token = await AsyncStorage.getItem('@token');
+      if (token) {
+        Axios.get('http://hiringtutors.azurewebsites.net/api/User/GetUserInfo', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        })
+          .then(res => {
+            console.log(res.data.email);
+            AsyncStorage.setItem('@name', res.data.fullName);
+            AsyncStorage.setItem('@email', res.data.email);
+            AsyncStorage.setItem('@avatar', BASE_URI + res.data.avatar);
+            AsyncStorage.setItem('@roles', res.data.roles.join('-'));
+          })
+          .catch(err => console.log(err));
       }
       dispatch({ type: 'RESTORE_TOKEN', token });
     }

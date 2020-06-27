@@ -31,6 +31,7 @@ function Login(props) {
             axios.post('http://hiringtutors.azurewebsites.net/api/Auth/login-user', { email, password })
                 .then(res => {
                     AsyncStorage.setItem('@token', res.data.token);
+                    AsyncStorage.setItem('@email', res.data.email);
                     AsyncStorage.setItem('@name', res.data.fullName);
                     AsyncStorage.setItem('@roles', res.data.roles.join('-'));
                     let avatar = res.data.avatar;
@@ -58,13 +59,14 @@ function Login(props) {
             axios.post('http://hiringtutors.azurewebsites.net/api/Auth/login', { token: userInfo.idToken })
                 .then(res => {
                     AsyncStorage.setItem('@token', res.data.token);
+                    AsyncStorage.setItem('@email', res.data.email);
                     AsyncStorage.setItem('@name', res.data.fullName);
                     AsyncStorage.setItem('@avatar', res.data.avatar);
                     AsyncStorage.setItem('@roles', res.data.roles.join('-'));
                     signIn(res.data.token);
                 })
                 .catch(err => {
-                    setAlertMessage('Đã xảy ra lỗi');
+                    setAlertMessage('Đã xảy ra lỗi! Xin vui lòng thử lại!');
                     setShowAlert(true);
                     setIsLoading(false);
                 });

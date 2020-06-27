@@ -6,7 +6,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { mainColor, BASE_URI } from '../constant/constant';
+import { mainColor, BASE_URI, PAGE_SIZE } from '../constant/constant';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import MarqueeText from 'react-native-marquee';
@@ -21,15 +21,16 @@ function News(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-            Axios.get(`http://hiringtutors.azurewebsites.net/api/Tutor/List?pageNum=${page}&pageSize=3`, {
+            const email = await AsyncStorage.getItem('@email');
+            Axios.get(`http://hiringtutors.azurewebsites.net/api/Tutor/List?pageNum=${page}&pageSize=${PAGE_SIZE}`, {
                 headers: {
                     'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
                 }
             })
                 .then(res => {
                     setIsLoading(false);
-                    setTutors(res.data);
-                    if (res.data.length < 3) {
+                    setTutors(res.data.filter(tutor => tutor.email !== email));
+                    if (res.data.length < PAGE_SIZE) {
                         setIsLoadmore(false);
                     }
                 })
@@ -39,15 +40,16 @@ function News(props) {
     }, []);
 
     const loadMore = async () => {
-        Axios.get(`http://hiringtutors.azurewebsites.net/api/Tutor/List?pageNum=${page + 1}&pageSize=3`, {
+        const email = await AsyncStorage.getItem('@email');
+        Axios.get(`http://hiringtutors.azurewebsites.net/api/Tutor/List?pageNum=${page + 1}&pageSize=${PAGE_SIZE}`, {
             headers: {
                 'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
             }
         })
             .then(res => {
                 setPage(page + 1);
-                setTutors(tutors.concat(res.data));
-                if (res.data.length < 3) {
+                setTutors(tutors.concat(res.data.filter(tutor => tutor.email !== email)));
+                if (res.data.length < PAGE_SIZE) {
                     setIsLoadmore(false);
                 }
             })
@@ -66,15 +68,17 @@ function News(props) {
 
     const refreshHandler = async () => {
         setRefreshing(true);
-        Axios.get(`http://hiringtutors.azurewebsites.net/api/Tutor/List?pageNum=1&pageSize=3`, {
+        const email = await AsyncStorage.getItem('@email');
+        console.log(email);
+        Axios.get(`http://hiringtutors.azurewebsites.net/api/Tutor/List?pageNum=1&pageSize=${PAGE_SIZE}`, {
             headers: {
                 'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
             }
         })
             .then(res => {
-                setTutors(res.data);
+                setTutors(res.data.filter(tutor => tutor.email !== email));
                 setRefreshing(false);
-                if (res.data.length < 3) {
+                if (res.data.length < PAGE_SIZE) {
                     setIsLoadmore(false);
                 }
             })

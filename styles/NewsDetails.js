@@ -3,7 +3,8 @@ import { mainColor } from "../constant/constant";
 
 export const styles = StyleSheet.create({
     container: {
-        paddingBottom: 50
+        paddingBottom: 50,
+        elevation: -1
     },
     topBG: {
         backgroundColor: mainColor,

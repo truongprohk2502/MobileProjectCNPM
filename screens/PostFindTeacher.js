@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, ScrollView, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { View, TextInput, Text, ScrollView, TouchableHighlight, TouchableWithoutFeedback, Image } from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import { styles } from '../styles/PostFindTeacher';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Foundation from 'react-native-vector-icons/Foundation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { mainColor, placeholderColor } from '../constant/constant';
+import { mainColor, placeholderColor, BASE_URI } from '../constant/constant';
 import DaySelect from '../components/DaySelect';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
@@ -18,8 +18,9 @@ import HideWithKeyboard from 'react-native-hide-with-keyboard';
 
 function PostFindTeacher(props) {
     const [isLoading, setIsLoading] = useState(false);
-    const [update, setUpdate] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [showButton, setShowButton] = useState(true);
+    const [hasActive, setHasActive] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [title, setTitle] = useState('');
     const [subjects, setSubjects] = useState([]);
@@ -33,6 +34,7 @@ function PostFindTeacher(props) {
     const [subjectText, setSubjectText] = useState('');
     const [categoryText, setCategoryText] = useState('');
     const [content, setContent] = useState('');
+    const [tutors, setTutors] = useState([]);
     const [schedule, setSchedule] = useState({
         monday: 0,
         tuesday: 0,
@@ -44,7 +46,7 @@ function PostFindTeacher(props) {
     });
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
+        const fetchBlankUserInfo = async () => {
             setIsLoading(true);
             const token = await AsyncStorage.getItem('@token');
             Axios.get('http://hiringtutors.azurewebsites.net/api/User/GetUserInfo', {
@@ -81,9 +83,17 @@ function PostFindTeacher(props) {
                 .catch(err => console.log(err));
             setIsLoading(false);
         }
-        const fetchData = async () => {
+        const fetchExistUserData = async () => {
             const { data } = props.route.params;
-            setUpdate(true);
+            if (data.inforNewsView.status === 5 || data.inforNewsView.status === 6) {
+                setShowButton(false);
+            }
+            setTutors(data.inforNewsView.tutorNewsViews);
+            data.inforNewsView.tutorNewsViews.forEach(tutor => {
+                if (tutor.status === 2) {
+                    setHasActive(true);
+                }
+            })
             setAddress(data.addressView);
             setAddressText(getAddressText(data.addressView));
             setPhone(data.inforNewsView.phoneNumber);
@@ -130,9 +140,9 @@ function PostFindTeacher(props) {
                 .catch(err => console.log(err));
         }
         if (props.route.params?.data) {
-            fetchData();
+            fetchExistUserData();
         } else {
-            fetchUserInfo();
+            fetchBlankUserInfo();
         }
     }, []);
 
@@ -303,13 +313,64 @@ function PostFindTeacher(props) {
                 })
                     .then(res => {
                         showToastWithGravity('Bạn đã đăng yêu cầu thành công');
-                        props.navigation.goBack();
+                        props.navigation.pop();
+                        props.navigation.navigate('ManageNews');
                         setIsLoading(false);
                     })
                     .catch(err => console.log(err));
             }
         }
     }
+
+    const actionHandler = async (val, id) => {
+        if (val === 'invite') {
+            Axios.put('http://hiringtutors.azurewebsites.net/api/News/ApproveCandicate', {
+                tutorId: id,
+                newsId: props.route.params.data.id
+            }, {
+                headers: {
+                    'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
+                }
+            })
+                .then(res => {
+                    showToastWithGravity('Xác nhận dạy thành công');
+                    let temp = [...tutors];
+                    temp.forEach(tutor => {
+                        if (tutor.tutorId === id) {
+                            tutor.status = 2;
+                        }
+                    });
+                    setTutors([...temp]);
+                    setHasActive(true);
+                    props.route.params.reloadNews();
+                })
+                .catch(err => console.log(err));
+        } else if (val === 'cancel') {
+            Axios.put('http://hiringtutors.azurewebsites.net/api/News/CancelCandicates', {
+                newsId: props.route.params.data.id,
+                tutorCandicateIds: [id]
+            }, {
+                headers: {
+                    'Authorization': 'Bearer ' + await AsyncStorage.getItem('@token')
+                }
+            })
+                .then(res => {
+                    showToastWithGravity('Hủy dạy thành công');
+                    const find = tutors.find(t => t.tutorId === id);
+                    if (find && find.status === 2) {
+                        setHasActive(false);
+                    }
+                    let temp = [...tutors].filter(t => t.tutorId !== id);
+                    setTutors([...temp]);
+                    props.route.params.reloadNews();
+                })
+                .catch(err => console.log(err));
+        }
+    }
+
+    const getTutorStatus = (n) => !hasActive ? 'Đang chờ xác nhận' : n === 1 ? 'Đang tạm khóa' : n === 2 ? 'Đã xác nhận' : '';
+
+    const getTutorStatusColor = (n) => !hasActive ? 'orange' : n === 1 ? 'red' : n === 2 ? 'lime' : 'black';
 
     return (
         isLoading ? <Splash /> :
@@ -322,6 +383,32 @@ function PostFindTeacher(props) {
                             </View>
                         </View>
                         <View style={styles.container}>
+                            {props.route.params && props.route.params.data &&
+                                <>
+                                    <Text style={styles.headerSize}>Gia sư đề nghị</Text>
+                                    <View style={styles.tutorForm}>
+                                        {tutors.map(tutor => (
+                                            <View key={tutor.tutorId} style={styles.tutorRow}>
+                                                <View style={{ flex: 1 }}>
+                                                    <Image source={{ uri: BASE_URI + tutor.avatar }} style={styles.img} />
+                                                    <View style={{ ...styles.circle, backgroundColor: getTutorStatusColor(tutor.status) }}></View>
+                                                </View>
+                                                <View style={{ flex: 6 }}>
+                                                    <Text style={styles.tutorName}
+                                                        onPress={() => props.navigation.navigate('ProfileTeacher', { id: tutor.tutorId })}>{tutor.fullName}</Text>
+                                                    <Text style={{ ...styles.tutorStatus, color: getTutorStatusColor(tutor.status) }}>{getTutorStatus(tutor.status)}</Text>
+                                                </View>
+                                                {(!hasActive || tutor.status === 2) ?
+                                                    <Picker mode='dialog' style={styles.action} value=''
+                                                        onValueChange={(val) => actionHandler(val, tutor.tutorId)}>
+                                                        <Picker.Item label="Chọn cách xử lý" value="" color='red' />
+                                                        {!hasActive && <Picker.Item label="Xác nhận dạy" value="invite" />}
+                                                        <Picker.Item label="Hủy dạy" value="cancel" />
+                                                    </Picker> : <View style={{ flex: 1 }}></View>}
+                                            </View>
+                                        ))}
+                                    </View>
+                                </>}
                             <Text style={styles.headerSize}>Yêu cầu</Text>
                             <View style={styles.requestForm}>
                                 <View style={styles.reqRow}>
@@ -433,12 +520,12 @@ function PostFindTeacher(props) {
                             </View>
                         </View>
                     </ScrollView>
-                    {update && props.route.params.data.inforNewsView.status !== 5 && props.route.params.data.inforNewsView.status !== 6 &&
+                    {showButton &&
                         <HideWithKeyboard>
                             <View style={styles.pinBtn}>
-                                <Text style={{ flex: 1, fontSize: 16, marginTop: 5 }}>{update ? 'Cập nhật ngay' : 'Đăng yêu cầu ngay'}</Text>
+                                <Text style={{ flex: 1, fontSize: 16, marginTop: 5 }}>{props.route.params?.data ? 'Cập nhật ngay' : 'Đăng yêu cầu ngay'}</Text>
                                 <TouchableHighlight activeOpacity={0.6} underlayColor='#2bbba5' style={styles.btn} onPress={saveHandler}>
-                                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>{update ? 'Cập nhật' : 'Đăng yêu cầu'}</Text>
+                                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>{props.route.params?.data ? 'Cập nhật' : 'Đăng yêu cầu'}</Text>
                                 </TouchableHighlight>
                             </View>
                         </HideWithKeyboard>}
